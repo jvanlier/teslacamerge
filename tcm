@@ -22,7 +22,8 @@ def main(src, dest):
         vg = loader.select_latest_videos(dir)
         LOG.info(f"Will handle videos for {vg.timestamp_str}")
         videoproc.merge(vg, dest)
-        break
+        # break
+
 
 if __name__ == "__main__":
     main()

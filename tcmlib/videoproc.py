@@ -54,6 +54,7 @@ def merge(vg: VideoGroup, dest: Path):
         # TODO: see if the reading of files can be done multi-core, since it's quite a bottleneck
         # or at least threads to do other work during blocking io
         for cap, cap_fname in zip(caps, cap_fnames):
+            # FIXME: incrementing frame nrs like this is probably very slow:
             cap.set(cv2.CAP_PROP_POS_FRAMES, frame_pos)
             frame_read, frame = cap.read()
 
