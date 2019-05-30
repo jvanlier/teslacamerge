@@ -40,7 +40,7 @@ def _open_captures(vg: VideoGroup):
     max_n_frames = max(n_frames)
 
     LOG.debug(f"Number of frames in each video: {n_frames}, max: {max_n_frames}")
-    return cap_fnames, caps, max_n_frames, np.mean(fpses)
+    return cap_fnames, caps, max_n_frames, float(np.mean(fpses))
 
 
 def _open_output_video(dest: Path, timestamp: str, fps: float):
