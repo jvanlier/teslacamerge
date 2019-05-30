@@ -24,7 +24,7 @@ DEBUG:tcmlib.videoproc:Number of frames in each video: [212, 212, 212], max: 212
 100%|██████████████████████████████████████████████████████████████████████████████████████████████| 212/212 [00:25<00:00,  8.80it/s]
 ```
 
-![example-video][example-output-video.jpg?raw=true]
+![example-video](example-output-video.jpg?raw=true)
 
 ## Future
 
