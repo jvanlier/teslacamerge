@@ -15,7 +15,7 @@ OUT_HEIGHT = IN_HEIGHT
 OUT_WIDTH = 3 * IN_WIDTH
 
 
-def merge(vg: VideoGroup, dest: Path):
+def _open_captures(vg: VideoGroup):
     cap_fnames = []
     caps = []
     n_frames = []
@@ -38,14 +38,26 @@ def merge(vg: VideoGroup, dest: Path):
         fpses.append(fps)
 
     max_n_frames = max(n_frames)
-    # max_n_frames = min(100, max_n_frames)
-    LOG.debug(f"Number of frames in each video: {n_frames}, max: {max_n_frames}")
 
-    out_vid = cv2.VideoWriter(str(dest / (vg.timestamp_str + ".mp4")),
-                              cv2.VideoWriter_fourcc(*"mp4v"),
-                              np.mean(fpses),
-                              (OUT_WIDTH, OUT_HEIGHT)
+    LOG.debug(f"Number of frames in each video: {n_frames}, max: {max_n_frames}")
+    return cap_fnames, caps, max_n_frames, np.mean(fpses)
+
+
+def _open_output_video(dest: Path, timestamp: str, fps: float):
+    return cv2.VideoWriter(
+        str(dest / (timestamp + ".mp4")),
+        cv2.VideoWriter_fourcc(*"mp4v"),
+        fps,
+        (OUT_WIDTH, OUT_HEIGHT)
     )
+
+
+def merge_group(vg: VideoGroup, dest: Path):
+    cap_fnames, caps, max_n_frames, fps = _open_captures(vg)
+    # Optionally limit max nr of frames for testing:
+    max_n_frames = min(10, max_n_frames)
+
+    out_vid = _open_output_video(dest, vg.timestamp_str, fps)
 
     for frame_pos in tqdm(range(0, max_n_frames)):
         frame_loc = 0
@@ -65,9 +77,6 @@ def merge(vg: VideoGroup, dest: Path):
 
             frame_loc += 1
 
-        # cv2.imwrite(str(dest / f"test-{frame_pos}.jpg"), frame_arr)
         out_vid.write(frame_arr)
 
     out_vid.release()
-
-

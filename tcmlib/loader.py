@@ -57,5 +57,3 @@ def select_latest_videos(path: Path) -> VideoGroup:
     dates = {f[:19] for f in files}
     max_date = max(dates)
     return VideoGroup.from_dir(max_date, path)
-
-

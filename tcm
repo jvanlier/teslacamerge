@@ -21,7 +21,7 @@ def main(src, dest):
         LOG.info(f"Processing dir {dir}")
         vg = loader.select_latest_videos(dir)
         LOG.info(f"Will handle videos for {vg.timestamp_str}")
-        videoproc.merge(vg, dest)
+        videoproc.merge_group(vg, dest)
         # break
 
 
