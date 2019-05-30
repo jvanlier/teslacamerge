@@ -24,9 +24,9 @@ def _open_captures(vg: VideoGroup):
     for video_path in vg:
         cap = cv2.VideoCapture(str(video_path))
         cap.set(cv2.CAP_PROP_POS_AVI_RATIO, 1)  # Go to last frame
-        n_frames = int(cap.get(cv2.CAP_PROP_POS_FRAMES))
+        n_frames_vid = int(cap.get(cv2.CAP_PROP_POS_FRAMES))
 
-        n_frames.append(n_frames)
+        n_frames.append(n_frames_vid)
         caps.append(cap)
         cap_fnames.append(video_path.name)
 
