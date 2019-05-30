@@ -4,7 +4,6 @@ import asyncio
 
 import numpy as np
 import cv2
-from tqdm import tqdm
 
 from .loader import VideoGroup
 
@@ -42,7 +41,6 @@ async def _reader(queue, vg: VideoGroup):
             if frame_read:
                 more_content = True
                 frame_arr[:, i * IN_WIDTH:(i + 1) * IN_WIDTH, :] = frame
-        # LOG.info("Putting frame")
         await queue.put(frame_arr)
 
     await queue.put(None)
@@ -59,14 +57,12 @@ async def _writer(queue, dest_video_path: Path):
     try:
         while True:
             frame = await queue.get()
-            # LOG.info("Got frame")
             if not isinstance(frame, np.ndarray):
-                LOG.info("Writer seems to be done!")
+                LOG.debug(f"Writer for {dest_video_path.name} seems to be done!")
                 break
             vid.write(frame)
             queue.task_done()
     finally:
-        LOG.info("Writer cleaning up")
         vid.release()
 
 
@@ -80,36 +76,4 @@ def merge_group(vg: VideoGroup, dest_dir: Path):
     writer = _writer(queue, dest_video_path)
 
     loop.run_until_complete(asyncio.gather(reader, writer))
-    #loop.close()
-
-    #
-    #
-
-    # cap_fnames, caps, max_n_frames, fps = _open_captures(vg)
-    # # Optionally limit max nr of frames for testing:
-    # max_n_frames = min(10, max_n_frames)
-    #
-    # out_vid = _open_output_video(dest, vg.timestamp_str, fps)
-    #
-    # for frame_pos in tqdm(range(0, max_n_frames)):
-    #     frame_loc = 0
-    #     frame_arr = np.zeros((OUT_HEIGHT, OUT_WIDTH, 3), dtype=np.uint8)
-    #
-    #     # TODO: see if the reading of files can be done multi-core, since it's quite a bottleneck
-    #     # or at least threads to do other work during blocking io
-    #     for cap, cap_fname in zip(caps, cap_fnames):
-    #         # FIXME: incrementing frame nrs like this is probably very slow:
-    #         cap.set(cv2.CAP_PROP_POS_FRAMES, frame_pos)
-    #         frame_read, frame = cap.read()
-    #
-    #         if not frame_read:
-    #             LOG.warning(f"Could not read frame at pos {frame_pos} in file {cap_fname}")
-    #         else:
-    #             frame_arr[:, frame_loc * IN_WIDTH:(frame_loc + 1) * IN_WIDTH, :] = frame
-    #
-    #         frame_loc += 1
-    #
-    #     out_vid.write(frame_arr)
-    # out_vid.release()
-
 
