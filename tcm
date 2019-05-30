@@ -1,5 +1,7 @@
 #!/usr/bin/env python
+import asyncio
 import logging
+from datetime import datetime
 
 import click
 
@@ -17,13 +19,15 @@ def main(src, dest):
     src, dest = loader.parse_paths(src, dest)
     loader.verify_paths(src, dest)
 
+    start = datetime.now()
     for dir in sorted(src.glob("*")):
         LOG.info(f"Processing dir {dir}")
         vg = loader.select_latest_videos(dir)
         LOG.info(f"Will handle videos for {vg.timestamp_str}")
-        videoproc.merge_group(vg, dest)
-        # break
 
+        videoproc.merge_group(vg, dest)
+    end = datetime.now()
+    LOG.info("Processing took {} sec".format((end-start).total_seconds()))
 
 if __name__ == "__main__":
     main()
