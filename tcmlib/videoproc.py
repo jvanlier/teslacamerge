@@ -24,9 +24,9 @@ def _open_captures(vg: VideoGroup):
     for video_path in vg:
         cap = cv2.VideoCapture(str(video_path))
         cap.set(cv2.CAP_PROP_POS_AVI_RATIO, 1)  # Go to last frame
-        msec = int(cap.get(cv2.CAP_PROP_POS_FRAMES))
+        n_frames = int(cap.get(cv2.CAP_PROP_POS_FRAMES))
 
-        n_frames.append(msec)
+        n_frames.append(n_frames)
         caps.append(cap)
         cap_fnames.append(video_path.name)
 
@@ -78,5 +78,6 @@ def merge_group(vg: VideoGroup, dest: Path):
             frame_loc += 1
 
         out_vid.write(frame_arr)
-
     out_vid.release()
+
+
