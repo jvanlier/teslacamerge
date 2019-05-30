@@ -10,7 +10,7 @@ setup(
     author="Schiphol Data Hub",
     long_description=long_description,
     author_email="jori@jvlanalytics.nl",
-    packages=["tcm"],
+    packages=["tcmlib"],
     install_requires=[
         "matplotlib==3.1.0",
         "click==7.0",
@@ -24,5 +24,5 @@ setup(
             "pytest==4.5.0"
         },
     },
-    scripts=["teslacamerge"]
+    scripts=["tcm"]
 )
