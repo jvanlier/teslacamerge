@@ -8,23 +8,24 @@ I've realised that these videos are best watched side-by-side, and usually the i
 After a few hours of hacking, got something working. Very slow, but functional:
 
 ```
-» tcm -s /Volumes/TESLASTICK -d ~/tmp/tcm-out 
-INFO:__main__:Processing dir /Volumes/TESLASTICK/TeslaCam/SavedClips/2019-05-30_09-23-14
-INFO:__main__:Will handle videos for 2019-05-30_09-23-12
-DEBUG:tcmlib.videoproc:Number of frames in each video: [1467, 1467, 1467], max: 1467
-100%|████████████████████████████████████████████████████████████████████████████████████████████| 1467/1467 [02:51<00:00,  8.67it/s]
-INFO:__main__:Processing dir /Volumes/TESLASTICK/TeslaCam/SavedClips/2019-05-30_09-24-35
-INFO:__main__:Will handle videos for 2019-05-30_09-24-34
-DEBUG:tcmlib.videoproc:Number of frames in each video: [635, 635, 634], max: 635
-100%|█████████████████████████████████████████████████████████████████████████████████████████████▊| 634/635 [01:19<00:00,  8.71it/s]WARNING:tcmlib.videoproc:Could not read frame at pos 634 in file 2019-05-30_09-24-34-right_repeater.mp4
-100%|██████████████████████████████████████████████████████████████████████████████████████████████| 635/635 [01:19<00:00,  8.78it/s]
-INFO:__main__:Processing dir /Volumes/TESLASTICK/TeslaCam/SavedClips/2019-05-30_09-25-43
-INFO:__main__:Will handle videos for 2019-05-30_09-25-43
-DEBUG:tcmlib.videoproc:Number of frames in each video: [212, 212, 212], max: 212
-100%|██████████████████████████████████████████████████████████████████████████████████████████████| 212/212 [00:25<00:00,  8.80it/s]
+» tcm -s /Volumes/TESLASTICK -d ~/tmp/tcm-out                                                                                         jvlier@joris-mbp
+2019-05-30 17:50:46,805 INFO [tcm/main]: Next up: videos in /Volumes/TESLASTICK/TeslaCam/SavedClips/2019-05-30_09-24-35
+2019-05-30 17:50:46,806 DEBUG [selector_events/__init__]: Using selector: KqueueSelector
+2019-05-30 17:51:16,478 DEBUG [videoproc/_writer]: Writer for 2019-05-30_09-24-34.mp4 seems to be done!
+2019-05-30 17:51:16,492 INFO [tcm/main]: Next up: videos in /Volumes/TESLASTICK/TeslaCam/SavedClips/2019-05-30_09-25-43
+2019-05-30 17:51:27,049 DEBUG [videoproc/_writer]: Writer for 2019-05-30_09-25-43.mp4 seems to be done!
+2019-05-30 17:51:27,062 INFO [tcm/main]: Next up: videos in /Volumes/TESLASTICK/TeslaCam/SavedClips/2019-05-30_09-27-48
+2019-05-30 17:51:32,007 DEBUG [videoproc/_writer]: Writer for 2019-05-30_09-27-48.mp4 seems to be done!
+2019-05-30 17:51:32,020 INFO [tcm/main]: Next up: videos in /Volumes/TESLASTICK/TeslaCam/SavedClips/2019-05-30_09-29-34
+[h264 @ 0x7ff96c8a3200] out of range intra chroma pred mode
+[h264 @ 0x7ff96c8a3200] error while decoding MB 33 40
+2019-05-30 17:52:38,534 DEBUG [videoproc/_writer]: Writer for 2019-05-30_09-29-32.mp4 seems to be done!
+2019-05-30 17:52:38,547 INFO [tcm/main]: Processing took 111.742426 sec
 ```
 
 ![example-video](example-output-video.jpg?raw=true)
+
+[YouTube](https://www.youtube.com/watch?v=tePUa5mpW2Q&feature=youtu.be)
 
 ## Future
 

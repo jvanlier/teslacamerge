@@ -16,38 +16,34 @@ def verify_paths(src: Path, dest: Path):
 
 
 class VideoGroup:
-    def __init__(self, timestamp_str, path_left, path_front, path_right):
+    CAM_NAMES = ["left_repeater", "front", "right_repeater"]
+
+    def __init__(self, timestamp_str, cam_paths):
         self.timestamp_str = timestamp_str
-        self.path_left = path_left
-        self.path_front = path_front
-        self.path_right = path_right
+        self._cam_paths = cam_paths
         self._verify()
 
     def _verify(self):
-        for p in [self.path_left, self.path_front, self.path_right]:
-            if not p.is_file():
-                raise FileNotFoundError(p)
+        for cam, path in self._cam_paths.items():
+            if not path.is_file():
+                raise FileNotFoundError(f"Expected {cam} at {path}")
 
     @classmethod
     def from_dir(cls, timestamp_str, path):
-        vid_paths = sorted(path.glob(timestamp_str + "*.mp4"))
-        if len(vid_paths) != 3:
-            raise FileNotFoundError(f"Expected 3 mp4s in {path}, got {len(vid_paths)}")
+        cam_paths = {
+            cam: path / (timestamp_str + "-" + cam + ".mp4") for cam in VideoGroup.CAM_NAMES
+        }
 
-        # List is sorted, so can grab appropriate index directly
-        return cls(timestamp_str, path_left=vid_paths[1], path_front=vid_paths[0],
-                   path_right=vid_paths[2])
+        return cls(timestamp_str, cam_paths)
 
-    def __repr__(self):
-        return f"VideoGroup({self.timestamp_str}, {self.path_left.name}, " \
-            f"{self.path_front.name}, {self.path_right.name}"
+    def keys(self):
+        yield from self._cam_paths.keys()
 
-    def __iter__(self):
-        """Iterate over cams, guaranteeing good order for side-by-side viewing, left-to-right.
-        :return: iterator
-        """
-        for p in [self.path_left, self.path_front, self.path_right]:
-            yield p
+    def items(self):
+        yield from self._cam_paths.items()
+
+    def values(self):
+        yield from self._cam_paths.values()
 
 
 def select_latest_videos(path: Path) -> VideoGroup:

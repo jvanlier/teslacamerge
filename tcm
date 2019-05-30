@@ -20,11 +20,11 @@ def main(src, dest):
     loader.verify_paths(src, dest)
 
     start = datetime.now()
-    for dir in sorted(src.glob("*")):
-        LOG.info(f"Next up: videos in {dir}")
-        vg = loader.select_latest_videos(dir)
-
+    for path in sorted(src.glob("*")):
+        LOG.info(f"Next up: videos in {path}")
+        vg = loader.select_latest_videos(path)
         videoproc.merge_group(vg, dest)
+
     end = datetime.now()
     LOG.info("Processing took {} sec".format((end-start).total_seconds()))
 

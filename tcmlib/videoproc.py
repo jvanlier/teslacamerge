@@ -17,30 +17,34 @@ FPS = 40
 
 
 def _open_captures(vg: VideoGroup):
-    for video_path in vg:
+    caps = {}
+
+    for cam_name, video_path in vg.items():
         cap = cv2.VideoCapture(str(video_path))
         width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
         height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
         if not width == IN_WIDTH or not height == IN_HEIGHT:
-            raise ValueError(f"Incorrect dimensions, got {height}x{width}")
+            raise ValueError(f"Incorrect dimensions, got {width}x{height}")
 
-        yield cap
+        caps[cam_name] = cap
+    return caps
 
 
 async def _reader(queue, vg: VideoGroup):
-    caps = list(_open_captures(vg))
+    caps = _open_captures(vg)
 
     more_content = True
     while more_content:
         more_content = False  # Unless proven otherwise!
         frame_arr = np.zeros((OUT_HEIGHT, OUT_WIDTH, 3), dtype=np.uint8)
 
-        for i, cap in enumerate(caps):
+        for cam_idx, (cam_name, cap) in enumerate(caps.items()):
             frame_read, frame = cap.read()
 
             if frame_read:
                 more_content = True
-                frame_arr[:, i * IN_WIDTH:(i + 1) * IN_WIDTH, :] = frame
+                frame_arr[:, cam_idx * IN_WIDTH:(cam_idx + 1) * IN_WIDTH, :] = frame
+
         await queue.put(frame_arr)
 
     await queue.put(None)
