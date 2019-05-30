@@ -34,13 +34,20 @@ class VideoGroup:
         if len(vid_paths) != 3:
             raise FileNotFoundError(f"Expected 3 mp4s in {path}, got {len(vid_paths)}")
 
-        # List is sorted, so can grab appropriate index directly[
+        # List is sorted, so can grab appropriate index directly
         return cls(timestamp_str, path_left=vid_paths[1], path_front=vid_paths[0],
                    path_right=vid_paths[2])
 
     def __repr__(self):
         return f"VideoGroup({self.timestamp_str}, {self.path_left.name}, " \
             f"{self.path_front.name}, {self.path_right.name}"
+
+    def __iter__(self):
+        """Iterate over cams, guaranteeing good order for side-by-side viewing, left-to-right.
+        :return: iterator
+        """
+        for p in [self.path_left, self.path_front, self.path_right]:
+            yield p
 
 
 def select_latest_videos(path: Path) -> VideoGroup:
