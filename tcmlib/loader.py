@@ -18,7 +18,9 @@ def verify_paths(src: Path, dest: Path):
 class VideoGroup:
     CAM_NAMES = ["left_repeater", "front", "right_repeater"]
 
-    def __init__(self, timestamp_str, cam_paths):
+    def __init__(self, timestamp_str: str, cam_paths: dict):
+        if not set(cam_paths.keys()) == set(VideoGroup.CAM_NAMES):
+            raise ValueError(f"Expected dict with keys {VideoGroup.CAM_NAMES}, got {cam_paths.keys()}")
         self.timestamp_str = timestamp_str
         self._cam_paths = cam_paths
         self._verify()
@@ -46,10 +48,13 @@ class VideoGroup:
         yield from self._cam_paths.values()
 
 
-def select_latest_videos(path: Path) -> VideoGroup:
-    files = [f.name for f in path.glob("*")]
+def select_latest_videos(path: Path, last_n: int = 1):
+    files = [f.name for f in path.glob("*.mp4")]
     if len(files) < 3:
         raise FileNotFoundError(f"Not enough videos in {path}")
-    dates = {f[:19] for f in files}
-    max_date = max(dates)
-    return VideoGroup.from_dir(max_date, path)
+    # Set for deduplication, then sort:
+    dates = sorted({f[:19] for f in files}, reverse=True)
+    n_to_get = min(last_n, len(dates))
+
+    for date in reversed(dates[:n_to_get]):
+        yield VideoGroup.from_dir(date, path)

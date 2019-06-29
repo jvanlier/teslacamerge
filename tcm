@@ -20,9 +20,9 @@ def main(src, dest):
     loader.verify_paths(src, dest)
 
     start = datetime.now()
-    for path in sorted(src.glob("*")):
+    for path in sorted(src.glob("2019-*")):  # FIXME - regex this. Quick hack to avoid .DS_Store.
         LOG.info(f"Next up: videos in {path}")
-        vg = loader.select_latest_videos(path)
+        vg = list(loader.select_latest_videos(path, last_n=2))
         videoproc.merge_group(vg, dest)
 
     end = datetime.now()
