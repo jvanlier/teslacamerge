@@ -2,10 +2,10 @@ teslacamerge
 ============
 Python tool for merging TeslaCam SavedClips.
 
-I've realised that these videos are best watched side-by-side, and usually the interesting bits are in the very last videos. This tool will, for each SavedClip, take the last minute, all 3 videos, and stitch them together. Output gets written out elsewhere.
+I've realised that these videos are best watched side-by-side, and usually the interesting bits are in the very last videos. This tool will, for each SavedClip, take the last 2 minute, all 3 videos, and stitch them together. Also, videos will be 2x speed (without dropping frames or resolution; the output is 80 FPS).
 
 ## Initial rudimentary version
-After a few hours of hacking, got something working. Very slow, but functional:
+After a few hours of hacking, got something working. Quite slow, but functional:
 
 ```
 » tcm -s /Volumes/TESLASTICK -d ~/tmp/tcm-out                                                                                         jvlier@joris-mbp
@@ -29,7 +29,7 @@ After a few hours of hacking, got something working. Very slow, but functional:
 
 ## Future
 
-In a later version, I'll probably add an option to include not only the last minute, but also a few minutes earlier, if available (configurable).
+Need to make the number of minutes to look back configurable (currently hardcoded to 2).
 
 In a much much later version, I might add my own Deep Learning magic: detect vehicles and persons. Auto-timelapse if there are no objects detected. Otherwise, play at normal speed.
 
