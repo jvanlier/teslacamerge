@@ -29,8 +29,7 @@ After a few hours of hacking, got something working. Quite slow, but functional:
 
 ## Future
 
-Need to make the number of minutes to look back configurable (currently hardcoded to 2).
-
-In a much much later version, I might add my own Deep Learning magic: detect vehicles and persons. Auto-timelapse if there are no objects detected. Otherwise, play at normal speed.
-
-Might also be nice to embed TeslaFi data...
+- Parallelize across dirs. Speed things up a bit. Should be doable with ProcessPoolExecutor.
+- Make the number of minutes to look back configurable (currently hardcoded to 3).
+- Dynamic timelapse using object detection. Speed up if nothing is going on.
+- Embed TeslaFi data: especially location would be nice.
