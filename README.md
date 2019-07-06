@@ -2,7 +2,7 @@ teslacamerge
 ============
 Python tool for merging TeslaCam SavedClips.
 
-I've realised that these videos are best watched side-by-side, and usually the interesting bits are in the very last videos. This tool will, for each SavedClip, take the last 2 minute, all 3 videos, and stitch them together. Also, videos will be 2x speed (without dropping frames or resolution; the output is 80 FPS).
+I've realised that these videos are best watched side-by-side, and usually the interesting bits are in the very last videos. This tool will, for each SavedClip, take the last 3 minutes, all 3 videos, and stitch them together. Also, videos will be 2x speed (without dropping frames or resolution; the output is 80 FPS).
 
 ## Initial rudimentary version
 After a few hours of hacking, got something working. Quite slow, but functional:
@@ -30,6 +30,6 @@ After a few hours of hacking, got something working. Quite slow, but functional:
 ## Future
 
 - Parallelize across dirs. Speed things up a bit. Should be doable with ProcessPoolExecutor.
-- Make the number of minutes to look back configurable (currently hardcoded to 3).
+- Make the number of minutes to look back configurable.
 - Dynamic timelapse using object detection. Speed up if nothing is going on.
 - Embed TeslaFi data: especially location would be nice.
