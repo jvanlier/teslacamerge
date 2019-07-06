@@ -22,7 +22,7 @@ def main(src, dest):
     start = datetime.now()
     for path in sorted(src.glob("2019-*")):  # FIXME - regex this. Quick hack to avoid .DS_Store.
         LOG.info(f"Next up: videos in {path}")
-        vg = list(loader.select_latest_videos(path, last_n=2))
+        vg = list(loader.select_latest_videos(path, last_n=3))
         videoproc.merge_group(vg, dest)
 
     end = datetime.now()
