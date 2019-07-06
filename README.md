@@ -25,7 +25,7 @@ After a few hours of hacking, got something working. Quite slow, but functional:
 
 ![example-video](example-output-video.jpg?raw=true)
 
-[YouTube](https://www.youtube.com/watch?v=tePUa5mpW2Q&feature=youtu.be)
+[YouTube](https://www.youtube.com/watch?v=tePUa5mpW2Q&feature=youtu.be) (old version when it was still 3 cams on 1 row)
 
 ## Future
 
