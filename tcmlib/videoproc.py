@@ -15,7 +15,7 @@ IN_WIDTH = 1280
 OUT_HEIGHT = IN_HEIGHT * 2
 OUT_WIDTH = IN_WIDTH * 2
 FRONT_X_OFFSET = round(IN_WIDTH / 2)
-FPS = 80  # 40 is normal, 80 is 2x speed
+FPS = 80  # 40 is normal-ish, 80 is 2x speed
 
 
 def _open_captures(vg: VideoGroup):
@@ -25,7 +25,11 @@ def _open_captures(vg: VideoGroup):
         cap = cv2.VideoCapture(str(video_path))
         width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
         height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
-        if not width == IN_WIDTH or not height == IN_HEIGHT:
+        if width == 0 and height == 0:
+            # zero byte videos have these properties - happens to repeaters sometimes.
+            cap = None
+            LOG.warning(f"Seems like {video_path} is corrupt - got dimensions 0x0. Ignoring it.")
+        elif not width == IN_WIDTH or not height == IN_HEIGHT:
             raise ValueError(f"Incorrect dimensions, got {width}x{height}")
 
         caps[cam_name] = cap
@@ -42,6 +46,9 @@ async def _reader(queue, vg_list: List[VideoGroup]):
             frame_arr = np.zeros((OUT_HEIGHT, OUT_WIDTH, 3), dtype=np.uint8)
 
             for cam_idx, (cam_name, cap) in enumerate(caps.items()):
+                if not cap:
+                    continue  # Sometimes one of the videos is corrupt.
+
                 frame_read, frame = cap.read()
 
                 if frame_read:
