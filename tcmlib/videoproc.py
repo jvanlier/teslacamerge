@@ -22,15 +22,20 @@ def _open_captures(vg: VideoGroup):
     caps = {}
 
     for cam_name, video_path in vg.items():
-        cap = cv2.VideoCapture(str(video_path))
-        width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
-        height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
-        if width == 0 and height == 0:
-            # zero byte videos have these properties - happens to repeaters sometimes.
-            cap = None
-            LOG.warning(f"Seems like {video_path} is corrupt - got dimensions 0x0. Ignoring it.")
-        elif not width == IN_WIDTH or not height == IN_HEIGHT:
-            raise ValueError(f"Incorrect dimensions, got {width}x{height}")
+        cap = None
+
+        if not video_path.is_file():
+            # Not a fatal error, since at least one of the other videos is present. Printing for awareness:
+            LOG.warning(f"FileNotFound: Expected video for {cam_name} at {video_path}")
+        else:
+            cap = cv2.VideoCapture(str(video_path))
+            width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
+            height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
+            if width == 0 and height == 0:
+                # zero byte videos have these properties - happens to repeaters sometimes.
+                LOG.warning(f"Seems like {video_path} is corrupt - got dimensions 0x0. Ignoring it.")
+            elif not width == IN_WIDTH or not height == IN_HEIGHT:
+                raise ValueError(f"Incorrect dimensions, got {width}x{height}")
 
         caps[cam_name] = cap
     return caps
