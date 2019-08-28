@@ -27,9 +27,3 @@ After a few hours of hacking, got something working. Quite slow, but functional:
 
 [YouTube](https://www.youtube.com/watch?v=tePUa5mpW2Q&feature=youtu.be) (old version when it was still 3 cams on 1 row)
 
-## Future
-
-- Parallelize across dirs. Speed things up a bit. Should be doable with ProcessPoolExecutor.
-- Make the number of minutes to look back configurable.
-- Dynamic timelapse using object detection. Speed up if nothing is going on.
-- Embed TeslaFi data: especially location would be nice.
