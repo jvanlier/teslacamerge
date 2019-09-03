@@ -10,20 +10,26 @@ from tcmlib import videoproc
 logging.basicConfig(level=logging.DEBUG,
                     format="%(asctime)s %(levelname)s [%(module)s/%(funcName)s]: %(message)s")
 LOG = logging.getLogger(__name__)
+print(LOG.level)
 
 
 @click.command()
 @click.option("-s", "--src", help="Path of mounted USB drive (contains the TeslaCam dir)", required=True)
 @click.option("-d", "--dest", help="Destination path", required=True)
-def main(src, dest):
+@click.option("-x", "--speed-ratio", help="Speed ratio; 1x is normal, 2x is twice as fast. Default is 1x.",
+              default=1)
+@click.option("-m", "--mins-back", default=2,
+              help="Number of videos, or minutes to look back (if available). Recommended is a bit higher "
+                   "than 1, because the last video might be really short. Default is 2.")
+def main(src, dest, speed_ratio, mins_back):
     src, dest = loader.parse_paths(src, dest)
     loader.verify_paths(src, dest)
 
     start = datetime.now()
     for path in sorted(src.glob("2019-*")):  # FIXME - regex this. Quick hack to avoid .DS_Store.
         LOG.info(f"Next up: videos in {path}")
-        vg = list(loader.select_latest_videos(path, last_n=3))
-        videoproc.merge_group(vg, dest)
+        vg = list(loader.select_latest_videos(path, last_n=mins_back))
+        videoproc.merge_group(vg, dest, path.name, speed_ratio)
 
     end = datetime.now()
     LOG.info("Processing took {} sec".format((end-start).total_seconds()))

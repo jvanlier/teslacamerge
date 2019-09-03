@@ -15,7 +15,7 @@ IN_WIDTH = 1280
 OUT_HEIGHT = IN_HEIGHT * 2
 OUT_WIDTH = IN_WIDTH * 2
 FRONT_X_OFFSET = round(IN_WIDTH / 2)
-FPS = 80  # 40 is normal-ish, 80 is 2x speed
+FPS = 36
 
 
 def _open_captures(vg: VideoGroup):
@@ -74,11 +74,11 @@ async def _reader(queue, vg_list: List[VideoGroup]):
     await queue.put(None)
 
 
-async def _writer(queue, dest_video_path: Path):
+async def _writer(queue, dest_video_path: Path, speed_ratio):
     vid = cv2.VideoWriter(
         str(dest_video_path),
         cv2.VideoWriter_fourcc(*"mp4v"),
-        FPS,
+        FPS * speed_ratio,
         (OUT_WIDTH, OUT_HEIGHT)
     )
 
@@ -94,13 +94,13 @@ async def _writer(queue, dest_video_path: Path):
         vid.release()
 
 
-def merge_group(vg: List[VideoGroup], dest_dir: Path):
-    dest_video_path = dest_dir / (vg[-1].timestamp_str + ".mp4")
+def merge_group(vg: List[VideoGroup], dest_dir: Path, video_dir_name: str, speed_ratio: int):
+    dest_video_path = dest_dir / (video_dir_name + ".mp4")
 
     loop = asyncio.get_event_loop()
     queue = asyncio.Queue(loop=loop, maxsize=128)
 
     reader = _reader(queue, vg)
-    writer = _writer(queue, dest_video_path)
+    writer = _writer(queue, dest_video_path, speed_ratio)
 
     loop.run_until_complete(asyncio.gather(reader, writer))

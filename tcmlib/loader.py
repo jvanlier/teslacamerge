@@ -23,12 +23,6 @@ class VideoGroup:
             raise ValueError(f"Expected dict with keys {VideoGroup.CAM_NAMES}, got {cam_paths.keys()}")
         self.timestamp_str = timestamp_str
         self._cam_paths = cam_paths
-        self._verify()
-
-    def _verify(self):
-        for cam, path in self._cam_paths.items():
-            if not path.is_file():
-                raise FileNotFoundError(f"Expected {cam} at {path}")
 
     @classmethod
     def from_dir(cls, timestamp_str, path):
@@ -52,7 +46,8 @@ def select_latest_videos(path: Path, last_n: int = 1):
     files = [f.name for f in path.glob("*.mp4")]
     if len(files) < 3:
         raise FileNotFoundError(f"Not enough videos in {path}")
-    # Set for deduplication, then sort:
+
+    # Set comprehension for de-duplication, then sort:
     dates = sorted({f[:19] for f in files}, reverse=True)
     n_to_get = min(last_n, len(dates))
 
