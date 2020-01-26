@@ -2,7 +2,7 @@ teslacamerge
 ============
 Python tool for merging TeslaCam SavedClips.
 
-I've realised that these videos are best watched side-by-side, and usually the interesting bits are in the very last videos. This tool will, for each SavedClip, take the last 3 minutes, all 3 videos, and stitch them together. Also, videos will be 2x speed (without dropping frames or resolution; the output is 80 FPS).
+I've realised that these videos are best watched side-by-side, and usually the interesting bits are in the very last videos. This tool will, for each SavedClip, take the last 3 minutes, all 3 videos, and stitch them together. Also, videos will be 2x speed (without dropping frames or resolution; the output is 72 FPS).
 
 ## Initial rudimentary version
 After a few hours of hacking, got something working. Quite slow, but functional:

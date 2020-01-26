@@ -1,18 +1,23 @@
+import logging
 from pathlib import Path
 
-
-def parse_paths(src: str, dest: str):
-    src = Path(src)
-    src /= "TeslaCam"
-    src /= "SavedClips"
-    dest = Path(dest)
-    return src, dest
+LOG = logging.getLogger(__name__)
 
 
-def verify_paths(src: Path, dest: Path):
-    for p in [src, dest]:
-        if not p.is_dir():
-            raise NotADirectoryError(p)
+def parse_paths(src_str: str, dest_str: str):
+    src, dst = Path(src_str), Path(dest_str)
+
+    if src.name not in ("SavedClips", "SentryClips"):
+        raise ValueError("Source dir should be either 'SavedClips' or 'SentryClips'.")
+
+    if not src.is_dir():
+        raise NotADirectoryError(src)
+
+    if not dst.is_dir():
+        dst.mkdir()
+        LOG.info(f"Created directory {dst}")
+
+    return src, dst
 
 
 class VideoGroup:
