@@ -14,7 +14,6 @@ IN_HEIGHT = 960
 IN_WIDTH = 1280
 OUT_HEIGHT = IN_HEIGHT * 2
 OUT_WIDTH = IN_WIDTH * 2
-FRONT_X_OFFSET = round(IN_WIDTH / 2)
 FPS = 36
 
 
@@ -35,7 +34,7 @@ def _open_captures(vg: VideoGroup):
                 # zero byte videos have these properties - happens to repeaters sometimes.
                 LOG.warning(f"Seems like {video_path} is corrupt - got dimensions 0x0. Ignoring it.")
             elif not width == IN_WIDTH or not height == IN_HEIGHT:
-                raise ValueError(f"Incorrect dimensions, got {width}x{height}")
+                raise ValueError(f"Incorrect dimensions for {video_path}, got {width}x{height}")
 
         caps[cam_name] = cap
     return caps
@@ -63,9 +62,11 @@ async def _reader(queue, vg_list: List[VideoGroup]):
                     if cam_idx == 0:
                         frame_arr[IN_HEIGHT:IN_HEIGHT * 2, 0:IN_WIDTH, :] = frame
                     elif cam_idx == 1:
-                        frame_arr[0:IN_HEIGHT, FRONT_X_OFFSET:FRONT_X_OFFSET+IN_WIDTH, :] = frame
+                        frame_arr[0:IN_HEIGHT, 0:IN_WIDTH, :] = frame
                     elif cam_idx == 2:
                         frame_arr[IN_HEIGHT:IN_HEIGHT * 2, IN_WIDTH:IN_WIDTH * 2, :] = frame
+                    elif cam_idx == 3:
+                        frame_arr[0:IN_HEIGHT, IN_WIDTH:IN_WIDTH * 2, :] = frame
                     else:
                         raise ValueError(f"cam_idx {cam_idx}")
 

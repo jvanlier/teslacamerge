@@ -21,7 +21,7 @@ def parse_paths(src_str: str, dest_str: str):
 
 
 class VideoGroup:
-    CAM_NAMES = ["left_repeater", "front", "right_repeater"]
+    CAM_NAMES = ["left_repeater", "front", "right_repeater", "back"]
 
     def __init__(self, timestamp_str: str, cam_paths: dict):
         if not set(cam_paths.keys()) == set(VideoGroup.CAM_NAMES):
@@ -47,9 +47,9 @@ class VideoGroup:
         yield from self._cam_paths.values()
 
 
-def select_latest_videos(path: Path, last_n: int = 1):
+def select_latest_videos(path: Path, last_n: int = 2):
     files = [f.name for f in path.glob("*.mp4")]
-    if len(files) < 3:
+    if len(files) < len(VideoGroup.CAM_NAMES):
         raise FileNotFoundError(f"Not enough videos in {path}")
 
     # Set comprehension for de-duplication, then sort:
