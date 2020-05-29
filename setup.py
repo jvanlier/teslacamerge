@@ -6,8 +6,8 @@ with open("README.md", "r") as f:
 setup(
     name="teslacamerge",
     version="0.0.1",
-    description="Python tool for merging TeslaCam SavedClips.",
-    author="Schiphol Data Hub",
+    description="Python tool for merging TeslaCam SavedClips",
+    author="Jori van Lier",
     long_description=long_description,
     author_email="jori@jvlanalytics.nl",
     packages=["tcmlib"],
