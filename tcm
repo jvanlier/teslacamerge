@@ -23,7 +23,7 @@ LOG = logging.getLogger(__name__)
 @click.option("-m", "--mins-back", default=2,
               help="Number of videos, or minutes to look back (if available). Recommended is a bit higher "
                    "than 1, because the last video might be really short. Default is 2.")
-@click.option("-w", "--num-workers", default=6,
+@click.option("-w", "--num-workers", default=7,
               help="Number of workers for ThreadPoolExecutor; each thread roughly corresponds to a CPU core "
                    "because all the work is being done in OpenCV code (outside of the GIL).")
 def main(src, dest, speed_ratio, mins_back, num_workers):
@@ -31,7 +31,7 @@ def main(src, dest, speed_ratio, mins_back, num_workers):
 
     start = datetime.now()
     # The length check below serves as a simple-but-effective way to eliminate things like MacOS's .DS_Store.
-    event_paths = sorted((p for p in src.glob("*") if len(p.name) == loader.DATE_PREFIX_LENGTH))
+    event_paths = reversed(sorted((p for p in src.glob("*") if len(p.name) == loader.DATE_PREFIX_LENGTH)))
     multi_event_vgs = [list(loader.generate_latest_video_groups(path, last_n=mins_back))
                        for path in event_paths]
     LOG.info(f"Indexed {len(multi_event_vgs)} paths.")
