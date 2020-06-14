@@ -1,7 +1,8 @@
 import logging
 from pathlib import Path
-import asyncio
-from typing import List
+from typing import List, Dict
+from threading import Thread
+from queue import Queue
 
 import numpy as np
 import cv2
@@ -17,7 +18,7 @@ OUT_WIDTH = IN_WIDTH * 2
 FPS = 36
 
 
-def _open_captures(vg: VideoGroup):
+def _open_captures(vg: VideoGroup) -> Dict[str, cv2.VideoCapture]:
     caps = {}
 
     for cam_name, video_path in vg.items():
@@ -40,7 +41,7 @@ def _open_captures(vg: VideoGroup):
     return caps
 
 
-async def _reader(queue, vg_list: List[VideoGroup]):
+def _reader(queue: Queue, vg_list: List[VideoGroup]):
     for vg in vg_list:
         caps = _open_captures(vg)
 
@@ -70,12 +71,15 @@ async def _reader(queue, vg_list: List[VideoGroup]):
                     else:
                         raise ValueError(f"cam_idx {cam_idx}")
 
-            await queue.put(frame_arr)
+            queue.put(frame_arr)
 
-    await queue.put(None)
+        for cap in caps.values():
+            cap.release()
+
+    queue.put(None)
 
 
-async def _writer(queue, dest_video_path: Path, speed_ratio):
+def _writer(queue: Queue, dest_video_path: Path, speed_ratio: float):
     vid = cv2.VideoWriter(
         str(dest_video_path),
         cv2.VideoWriter_fourcc(*"mp4v"),
@@ -83,25 +87,25 @@ async def _writer(queue, dest_video_path: Path, speed_ratio):
         (OUT_WIDTH, OUT_HEIGHT)
     )
 
-    try:
-        while True:
-            frame = await queue.get()
-            if not isinstance(frame, np.ndarray):
-                LOG.debug(f"Writer for {dest_video_path.name} seems to be done!")
-                break
-            vid.write(frame)
-            queue.task_done()
-    finally:
-        vid.release()
+    while True:
+        frame = queue.get()
+        if not isinstance(frame, np.ndarray):
+            vid.release()
+            break
+        vid.write(frame)
 
 
-def merge_group(vg: List[VideoGroup], dest_dir: Path, video_dir_name: str, speed_ratio: int):
-    dest_video_path = dest_dir / (video_dir_name + ".mp4")
+def merge(vg: List[VideoGroup], dest_dir: Path, speed_ratio: float):
+    out_mp4_name = vg[0].path.name + ".mp4"
+    LOG.info(f"Starting on {out_mp4_name}...")
+    out_mp4_path = dest_dir / out_mp4_name
 
-    loop = asyncio.get_event_loop()
-    queue = asyncio.Queue(loop=loop, maxsize=128)
+    queue = Queue(maxsize=20)
+    thr_reader = Thread(target=_reader, args=(queue, vg))
+    thr_reader.start()
 
-    reader = _reader(queue, vg)
-    writer = _writer(queue, dest_video_path, speed_ratio)
+    thr_writer = Thread(target=_writer, args=(queue, out_mp4_path, speed_ratio))
+    thr_writer.start()
 
-    loop.run_until_complete(asyncio.gather(reader, writer))
+    thr_writer.join()
+    LOG.info(f"Done with {out_mp4_name}")

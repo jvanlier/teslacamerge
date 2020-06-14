@@ -1,3 +1,4 @@
 *.pyc
 teslacamerge.egg-info
 .idea
+**/.DS_Store
