@@ -22,10 +22,10 @@ However, setting it up is straight forward if you have a bit of *nix command lin
     
 Once it's installed (and the virtualenv is activated):
 
-    tcm -s /path/to/TeslaCam/SavedClips -d ~/output_pat
+    tcm -s /path/to/TeslaCam/SavedClips -d ~/output_path
     
 Command line flag `-x` controls the speed ratio, `-m` controls how many minutes back to start from for each
-clip, and `-w` controls the number of workers. The default for `-w` is 6, which uses 600 % - 700 % CPU on my 
+clip, and `-w` controls the number of workers. The default for `-w` is 6, which uses 600-700 % CPU on my 
 8-Core MacBook. Change accordingly for your system. See `tcm --help` for details.
 
 ![example-video](example-output-video.jpg?raw=true)
