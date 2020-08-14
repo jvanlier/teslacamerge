@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 with open("README.md", "r") as f:
     long_description = f.read()
@@ -10,7 +10,7 @@ setup(
     author="Jori van Lier",
     long_description=long_description,
     author_email="jori@jvlanalytics.nl",
-    packages=["tcmlib"],
+    packages=find_packages(),
     python_requires=">=3.7",
     install_requires=[
         "matplotlib>=3.2.0",
